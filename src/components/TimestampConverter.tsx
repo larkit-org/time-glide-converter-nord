@@ -79,61 +79,52 @@ const TimestampConverter = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-4">
-      <div className="max-w-4xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold text-slate-900">Timestamp Converter</h1>
-          <p className="text-lg text-slate-600">Convert timestamps to dates across timezones</p>
-        </div>
-
+    <div className="min-h-screen bg-gradient-to-br from-violet-500 to-purple-600 p-4">
+      <div className="max-w-4xl mx-auto space-y-8">
         {/* Current Timestamp Card */}
-        <Card className="bg-white/80 backdrop-blur shadow-lg border-0">
-          <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-2 text-slate-800">
-              <Clock className="h-5 w-5 text-blue-600" />
+        <Card className="bg-white shadow-2xl border-0 overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-orange-400 to-pink-500 pb-6">
+            <CardTitle className="flex items-center gap-3 text-white text-2xl font-bold">
+              <Clock className="h-8 w-8" />
               Current Timestamp
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="text-center space-y-4">
-              <div className="bg-slate-900 rounded-lg p-4">
-                <div className="text-3xl font-mono text-emerald-400 font-bold">
+          <CardContent className="p-8 space-y-6">
+            <div className="text-center space-y-6">
+              <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-2xl p-8">
+                <div className="text-5xl font-mono text-cyan-400 font-bold tracking-wider">
                   {currentTimestamp}
                 </div>
-                <div className="text-sm text-slate-400 mt-1">Unix Timestamp</div>
+                <div className="text-lg text-slate-400 mt-3 font-medium">Unix Timestamp</div>
               </div>
               
-              <div className="flex flex-wrap gap-2 justify-center">
+              <div className="flex flex-wrap gap-4 justify-center">
                 <Button
                   onClick={() => copyToClipboard(currentTimestamp.toString(), 'Current timestamp')}
-                  className="bg-blue-600 hover:bg-blue-700 text-white shadow-lg"
+                  className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-xl text-lg px-8 py-3 font-bold"
                 >
-                  <Copy className="h-4 w-4 mr-2" />
+                  <Copy className="h-5 w-5 mr-3" />
                   Copy
                 </Button>
                 <Button
                   onClick={() => adjustTimestamp(-1)}
-                  variant="outline"
-                  className="border-red-200 hover:bg-red-50 text-red-700"
+                  className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white shadow-xl text-lg px-6 py-3 font-bold"
                 >
-                  <Minus className="h-4 w-4 mr-2" />
+                  <Minus className="h-5 w-5 mr-2" />
                   -1h
                 </Button>
                 <Button
                   onClick={() => adjustTimestamp(1)}
-                  variant="outline"
-                  className="border-emerald-200 hover:bg-emerald-50 text-emerald-700"
+                  className="bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white shadow-xl text-lg px-6 py-3 font-bold"
                 >
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="h-5 w-5 mr-2" />
                   +1h
                 </Button>
                 <Button
                   onClick={resetToNow}
-                  variant="outline"
-                  className="border-blue-200 hover:bg-blue-50 text-blue-700"
+                  className="bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white shadow-xl text-lg px-6 py-3 font-bold"
                 >
-                  <RefreshCw className="h-4 w-4 mr-2" />
+                  <RefreshCw className="h-5 w-5 mr-2" />
                   Now
                 </Button>
               </div>
@@ -142,37 +133,36 @@ const TimestampConverter = () => {
         </Card>
 
         {/* Timezone Conversion */}
-        <Card className="bg-white/80 backdrop-blur shadow-lg border-0">
-          <CardHeader className="pb-4">
-            <CardTitle className="text-slate-800">Timezone Conversion</CardTitle>
+        <Card className="bg-white shadow-2xl border-0 overflow-hidden">
+          <CardHeader className="bg-gradient-to-r from-cyan-500 to-blue-500 pb-6">
+            <CardTitle className="text-white text-2xl font-bold">Timezone Conversion</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid gap-4">
+          <CardContent className="p-8 space-y-6">
+            <div className="grid gap-6">
               <div>
-                <Label htmlFor="timezone" className="text-slate-700 font-medium">Select Timezone</Label>
+                <Label htmlFor="timezone" className="text-slate-800 font-bold text-lg">Select Timezone</Label>
                 <Select value={timezone} onValueChange={setTimezone}>
-                  <SelectTrigger className="mt-1">
+                  <SelectTrigger className="mt-2 text-lg p-4 font-medium">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {timezones.map((tz) => (
-                      <SelectItem key={tz} value={tz}>{tz}</SelectItem>
+                      <SelectItem key={tz} value={tz} className="text-lg">{tz}</SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
               
-              <div className="bg-slate-100 rounded-lg p-4">
-                <div className="text-sm text-slate-600 mb-1">Date in {timezone}</div>
-                <div className="text-xl font-mono text-slate-900 font-semibold">
+              <div className="bg-gradient-to-r from-slate-100 to-slate-200 rounded-2xl p-6">
+                <div className="text-lg text-slate-700 mb-2 font-bold">Date in {timezone}</div>
+                <div className="text-2xl font-mono text-slate-900 font-bold mb-4">
                   {formatDate(currentTimestamp, timezone)}
                 </div>
                 <Button
                   onClick={() => copyToClipboard(formatDate(currentTimestamp, timezone), `Date in ${timezone}`)}
-                  size="sm"
-                  className="mt-2 bg-emerald-600 hover:bg-emerald-700 text-white"
+                  className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white shadow-lg text-lg px-6 py-3 font-bold"
                 >
-                  <Copy className="h-3 w-3 mr-1" />
+                  <Copy className="h-4 w-4 mr-2" />
                   Copy Date
                 </Button>
               </div>
@@ -181,40 +171,39 @@ const TimestampConverter = () => {
         </Card>
 
         {/* Custom Conversion */}
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-8">
           {/* Date to Timestamp */}
-          <Card className="bg-white/80 backdrop-blur shadow-lg border-0">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-slate-800">Date to Timestamp</CardTitle>
+          <Card className="bg-white shadow-2xl border-0 overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-orange-500 to-pink-500 pb-6">
+              <CardTitle className="text-white text-2xl font-bold">Date to Timestamp</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="p-8 space-y-6">
               <div>
-                <Label htmlFor="custom-date" className="text-slate-700 font-medium">Enter Date</Label>
+                <Label htmlFor="custom-date" className="text-slate-800 font-bold text-lg">Enter Date</Label>
                 <Input
                   id="custom-date"
                   type="datetime-local"
                   value={customDate}
                   onChange={(e) => setCustomDate(e.target.value)}
-                  className="mt-1"
+                  className="mt-2 text-lg p-4 font-medium"
                 />
               </div>
               <Button
                 onClick={convertDateToTimestamp}
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+                className="w-full bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600 text-white shadow-xl text-lg py-4 font-bold"
                 disabled={!customDate}
               >
                 Convert to Timestamp
               </Button>
               {customTimestamp && (
-                <div className="bg-slate-100 rounded-lg p-3">
-                  <div className="text-sm text-slate-600 mb-1">Timestamp</div>
-                  <div className="font-mono text-slate-900 font-semibold">{customTimestamp}</div>
+                <div className="bg-gradient-to-r from-slate-100 to-slate-200 rounded-2xl p-6">
+                  <div className="text-lg text-slate-700 mb-2 font-bold">Timestamp</div>
+                  <div className="font-mono text-slate-900 font-bold text-xl mb-4">{customTimestamp}</div>
                   <Button
                     onClick={() => copyToClipboard(customTimestamp, 'Converted timestamp')}
-                    size="sm"
-                    className="mt-2 bg-blue-600 hover:bg-blue-700 text-white"
+                    className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white shadow-lg text-lg px-6 py-3 font-bold"
                   >
-                    <Copy className="h-3 w-3 mr-1" />
+                    <Copy className="h-4 w-4 mr-2" />
                     Copy
                   </Button>
                 </div>
@@ -223,34 +212,33 @@ const TimestampConverter = () => {
           </Card>
 
           {/* Timestamp to Date */}
-          <Card className="bg-white/80 backdrop-blur shadow-lg border-0">
-            <CardHeader className="pb-4">
-              <CardTitle className="text-slate-800">Timestamp to Date</CardTitle>
+          <Card className="bg-white shadow-2xl border-0 overflow-hidden">
+            <CardHeader className="bg-gradient-to-r from-cyan-500 to-blue-500 pb-6">
+              <CardTitle className="text-white text-2xl font-bold">Timestamp to Date</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="p-8 space-y-6">
               <div>
-                <Label htmlFor="custom-timestamp" className="text-slate-700 font-medium">Enter Timestamp</Label>
+                <Label htmlFor="custom-timestamp" className="text-slate-800 font-bold text-lg">Enter Timestamp</Label>
                 <Input
                   id="custom-timestamp"
                   type="number"
                   placeholder="1699123200"
                   value={customTimestamp}
                   onChange={(e) => setCustomTimestamp(e.target.value)}
-                  className="mt-1 font-mono"
+                  className="mt-2 font-mono text-lg p-4 font-medium"
                 />
               </div>
               {customTimestamp && !isNaN(Number(customTimestamp)) && (
-                <div className="bg-slate-100 rounded-lg p-3">
-                  <div className="text-sm text-slate-600 mb-1">Converted Date (UTC)</div>
-                  <div className="font-mono text-slate-900 font-semibold">
+                <div className="bg-gradient-to-r from-slate-100 to-slate-200 rounded-2xl p-6">
+                  <div className="text-lg text-slate-700 mb-2 font-bold">Converted Date (UTC)</div>
+                  <div className="font-mono text-slate-900 font-bold text-xl mb-4">
                     {formatDate(Number(customTimestamp), 'UTC')}
                   </div>
                   <Button
                     onClick={() => copyToClipboard(formatDate(Number(customTimestamp), 'UTC'), 'Converted date')}
-                    size="sm"
-                    className="mt-2 bg-emerald-600 hover:bg-emerald-700 text-white"
+                    className="bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-600 hover:to-pink-600 text-white shadow-lg text-lg px-6 py-3 font-bold"
                   >
-                    <Copy className="h-3 w-3 mr-1" />
+                    <Copy className="h-4 w-4 mr-2" />
                     Copy
                   </Button>
                 </div>
