@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Copy, Plus, Minus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -22,8 +21,12 @@ const TimestampConverter = () => {
     'Europe/London',
     'Europe/Paris',
     'Europe/Stockholm',
+    'Europe/Moscow',
+    'Europe/Helsinki',
+    'Europe/Madrid',
     'Asia/Tokyo',
     'Asia/Shanghai',
+    'Asia/Beijing',
     'Australia/Sydney'
   ];
 
