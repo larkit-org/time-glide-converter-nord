@@ -10,7 +10,9 @@ const TimestampConverter = () => {
   const [currentTimestamp, setCurrentTimestamp] = useState(Math.floor(Date.now() / 1000));
   const [customTimestamp, setCustomTimestamp] = useState('');
   const [customDate, setCustomDate] = useState('');
-  const [timezone, setTimezone] = useState('UTC');
+  const [timezone, setTimezone] = useState(() => {
+    return localStorage.getItem('timestamp-timezone') || 'UTC';
+  });
   const { toast } = useToast();
 
   const timezones = [
@@ -25,13 +27,10 @@ const TimestampConverter = () => {
     'Australia/Sydney'
   ];
 
-  // Update current timestamp every second
+  // Save timezone to localStorage when it changes
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTimestamp(Math.floor(Date.now() / 1000));
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
+    localStorage.setItem('timestamp-timezone', timezone);
+  }, [timezone]);
 
   const formatDate = (timestamp: number, tz: string = 'UTC') => {
     const date = new Date(timestamp * 1000);
@@ -51,9 +50,9 @@ const TimestampConverter = () => {
     try {
       await navigator.clipboard.writeText(text);
       toast({
-        title: "Copied!",
-        description: `${label} copied to clipboard`,
-        className: "bg-green-50 border-green-200 text-green-800"
+        title: "Скопировано!",
+        description: `${label} скопировано в буфер обмена`,
+        className: "bg-gray-50 border-gray-200 text-gray-900"
       });
     } catch (err) {
       console.error('Failed to copy:', err);
@@ -61,8 +60,7 @@ const TimestampConverter = () => {
   };
 
   const adjustTimestamp = (hours: number) => {
-    const adjusted = currentTimestamp + (hours * 3600);
-    setCurrentTimestamp(adjusted);
+    setCurrentTimestamp(prev => prev + (hours * 3600));
   };
 
   const convertDateToTimestamp = () => {
@@ -77,106 +75,106 @@ const TimestampConverter = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white p-8">
-      <div className="max-w-4xl mx-auto space-y-12">
+    <div className="min-h-screen bg-white p-8 font-mono">
+      <div className="max-w-4xl mx-auto space-y-16">
         
         {/* Current Timestamp - Main Display */}
         <div className="text-center space-y-8">
-          <div className="space-y-4">
-            <div className="text-8xl font-mono font-bold text-gray-900 tracking-tight">
+          <div className="space-y-6">
+            <div className="text-9xl font-bold text-black tracking-tight leading-none">
               {currentTimestamp}
             </div>
-            <div className="text-2xl text-gray-600 font-medium">Unix Timestamp</div>
+            <div className="text-3xl text-gray-600 font-medium tracking-wide">Unix Timestamp</div>
           </div>
           
-          <div className="flex gap-4 justify-center flex-wrap">
+          <div className="flex gap-6 justify-center flex-wrap">
             <Button
-              onClick={() => copyToClipboard(currentTimestamp.toString(), 'Current timestamp')}
-              className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8 py-3"
+              onClick={() => copyToClipboard(currentTimestamp.toString(), 'Текущий timestamp')}
+              className="bg-black hover:bg-gray-800 text-white text-xl px-10 py-4 rounded-none font-mono"
             >
-              <Copy className="h-5 w-5 mr-2" />
+              <Copy className="h-6 w-6 mr-3" />
               Copy
             </Button>
             <Button
               onClick={() => adjustTimestamp(-1)}
-              className="bg-red-600 hover:bg-red-700 text-white text-lg px-6 py-3"
+              className="bg-gray-900 hover:bg-gray-700 text-white text-xl px-8 py-4 rounded-none font-mono"
             >
-              <Minus className="h-5 w-5 mr-2" />
+              <Minus className="h-6 w-6 mr-3" />
               -1h
             </Button>
             <Button
               onClick={() => adjustTimestamp(1)}
-              className="bg-green-600 hover:bg-green-700 text-white text-lg px-6 py-3"
+              className="bg-gray-900 hover:bg-gray-700 text-white text-xl px-8 py-4 rounded-none font-mono"
             >
-              <Plus className="h-5 w-5 mr-2" />
+              <Plus className="h-6 w-6 mr-3" />
               +1h
             </Button>
             <Button
               onClick={resetToNow}
-              className="bg-purple-600 hover:bg-purple-700 text-white text-lg px-6 py-3"
+              className="bg-gray-800 hover:bg-gray-600 text-white text-xl px-8 py-4 rounded-none font-mono"
             >
-              <RefreshCw className="h-5 w-5 mr-2" />
+              <RefreshCw className="h-6 w-6 mr-3" />
               Now
             </Button>
           </div>
         </div>
 
         {/* Current Date in Selected Timezone */}
-        <div className="text-center space-y-6 py-8 border-t border-gray-200">
-          <div className="space-y-4">
-            <div className="text-4xl font-mono font-bold text-gray-900">
+        <div className="text-center space-y-8 py-12 border-t border-gray-300">
+          <div className="space-y-6">
+            <div className="text-5xl font-bold text-black font-mono">
               {formatDate(currentTimestamp, timezone)}
             </div>
             <div className="flex justify-center">
               <Select value={timezone} onValueChange={setTimezone}>
-                <SelectTrigger className="w-64 text-lg">
+                <SelectTrigger className="w-80 text-xl border-2 border-black rounded-none font-mono">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="font-mono">
                   {timezones.map((tz) => (
-                    <SelectItem key={tz} value={tz} className="text-lg">{tz}</SelectItem>
+                    <SelectItem key={tz} value={tz} className="text-xl">{tz}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             </div>
           </div>
           <Button
-            onClick={() => copyToClipboard(formatDate(currentTimestamp, timezone), `Date in ${timezone}`)}
-            className="bg-blue-600 hover:bg-blue-700 text-white text-lg px-8 py-3"
+            onClick={() => copyToClipboard(formatDate(currentTimestamp, timezone), `Дата в ${timezone}`)}
+            className="bg-black hover:bg-gray-800 text-white text-xl px-10 py-4 rounded-none font-mono"
           >
-            <Copy className="h-5 w-5 mr-2" />
+            <Copy className="h-6 w-6 mr-3" />
             Copy Date
           </Button>
         </div>
 
         {/* Conversion Tools */}
-        <div className="grid md:grid-cols-2 gap-12 pt-8 border-t border-gray-200">
+        <div className="grid md:grid-cols-2 gap-16 pt-12 border-t border-gray-300">
           
           {/* Date to Timestamp */}
-          <div className="space-y-6">
-            <h3 className="text-2xl font-bold text-gray-900 text-center">Date → Timestamp</h3>
-            <div className="space-y-4">
+          <div className="space-y-8">
+            <h3 className="text-3xl font-bold text-black text-center font-mono">Date → Timestamp</h3>
+            <div className="space-y-6">
               <Input
                 type="datetime-local"
                 value={customDate}
                 onChange={(e) => setCustomDate(e.target.value)}
-                className="text-lg p-4"
+                className="text-xl p-6 border-2 border-black rounded-none font-mono"
               />
               <Button
                 onClick={convertDateToTimestamp}
-                className="w-full bg-purple-600 hover:bg-purple-700 text-white text-lg py-4"
+                className="w-full bg-gray-900 hover:bg-gray-700 text-white text-xl py-6 rounded-none font-mono"
                 disabled={!customDate}
               >
                 Convert to Timestamp
               </Button>
               {customTimestamp && (
-                <div className="text-center space-y-3 p-6 bg-gray-50 rounded-lg">
-                  <div className="text-3xl font-mono font-bold text-gray-900">{customTimestamp}</div>
+                <div className="text-center space-y-4 p-8 bg-gray-100 border-2 border-black">
+                  <div className="text-4xl font-bold text-black font-mono">{customTimestamp}</div>
                   <Button
-                    onClick={() => copyToClipboard(customTimestamp, 'Converted timestamp')}
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                    onClick={() => copyToClipboard(customTimestamp, 'Конвертированный timestamp')}
+                    className="bg-black hover:bg-gray-800 text-white text-lg rounded-none font-mono"
                   >
-                    <Copy className="h-4 w-4 mr-2" />
+                    <Copy className="h-5 w-5 mr-2" />
                     Copy
                   </Button>
                 </div>
@@ -185,27 +183,27 @@ const TimestampConverter = () => {
           </div>
 
           {/* Timestamp to Date */}
-          <div className="space-y-6">
-            <h3 className="text-2xl font-bold text-gray-900 text-center">Timestamp → Date</h3>
-            <div className="space-y-4">
+          <div className="space-y-8">
+            <h3 className="text-3xl font-bold text-black text-center font-mono">Timestamp → Date</h3>
+            <div className="space-y-6">
               <Input
                 type="number"
                 placeholder="Enter timestamp..."
                 value={customTimestamp}
                 onChange={(e) => setCustomTimestamp(e.target.value)}
-                className="font-mono text-lg p-4"
+                className="text-xl p-6 border-2 border-black rounded-none font-mono"
               />
               {customTimestamp && !isNaN(Number(customTimestamp)) && (
-                <div className="text-center space-y-3 p-6 bg-gray-50 rounded-lg">
-                  <div className="text-2xl font-mono font-bold text-gray-900">
+                <div className="text-center space-y-4 p-8 bg-gray-100 border-2 border-black">
+                  <div className="text-3xl font-bold text-black font-mono">
                     {formatDate(Number(customTimestamp), 'UTC')}
                   </div>
-                  <div className="text-sm text-gray-600">UTC</div>
+                  <div className="text-lg text-gray-600 font-mono">UTC</div>
                   <Button
-                    onClick={() => copyToClipboard(formatDate(Number(customTimestamp), 'UTC'), 'Converted date')}
-                    className="bg-blue-600 hover:bg-blue-700 text-white"
+                    onClick={() => copyToClipboard(formatDate(Number(customTimestamp), 'UTC'), 'Конвертированная дата')}
+                    className="bg-black hover:bg-gray-800 text-white text-lg rounded-none font-mono"
                   >
-                    <Copy className="h-4 w-4 mr-2" />
+                    <Copy className="h-5 w-5 mr-2" />
                     Copy
                   </Button>
                 </div>
