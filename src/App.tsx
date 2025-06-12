@@ -1,26 +1,41 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+import { ThemeProvider } from "next-themes";
+import { Toaster } from "./components/ui/sonner";
+import { TooltipProvider } from "./components/ui/tooltip";
+import TimestampConverter from "./components/TimestampConverter";
+import { ThemeToggle } from "./components/ui/theme-toggle";
+import Footer from './components/Footer';
+import './App.css';
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <TooltipProvider>
+        <Toaster />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={
+              <>
+                <div className="min-h-screen flex flex-col">
+                  <div className="flex-grow">
+                    <div className="container mx-auto p-4">
+                      <div className="flex justify-end mb-8">
+                        <ThemeToggle />
+                      </div>
+                      <TimestampConverter />
+                    </div>
+                  </div>
+                  <Footer />
+                </div>
+              </>
+            } />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </ThemeProvider>
   </QueryClientProvider>
 );
 

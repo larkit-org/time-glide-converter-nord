@@ -101,3 +101,18 @@
     @apply bg-background text-foreground;
   }
 }
+
+@keyframes shake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-1deg) translate(-1px, 1px); }
+  50% { transform: rotate(0deg) translate(1px, -1px); }
+  75% { transform: rotate(1deg) translate(-1px, 1px); }
+}
+
+.logo-shake {
+  display: inline-block;
+}
+
+.logo-shake:hover {
+  animation: shake 0.5s ease-in-out infinite;
+}
