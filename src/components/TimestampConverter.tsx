@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Copy, Plus, Minus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -30,6 +29,12 @@ const TimestampConverter = () => {
     'Asia/Beijing',
     'Australia/Sydney'
   ];
+
+  // Auto-detect theme
+  useEffect(() => {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.classList.toggle('dark', prefersDark);
+  }, []);
 
   // Save timezone to localStorage when it changes
   useEffect(() => {
@@ -78,14 +83,39 @@ const TimestampConverter = () => {
     setCurrentTimestamp(Math.floor(Date.now() / 1000));
   };
 
+  const handleTimestampClick = () => {
+    copyToClipboard(currentTimestamp.toString(), 'Timestamp');
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground p-8" style={{ fontFamily: 'Montserrat, monospace' }}>
       <div className="max-w-4xl mx-auto space-y-16">
         
+        {/* Logo Header */}
+        <div className="text-center pt-4">
+          <a href="https://larkit.org/" target="_blank" rel="noopener noreferrer">
+            <img 
+              src="https://larkit.org/logo.png" 
+              alt="Larkit" 
+              className="mx-auto h-auto max-w-[100px] hover:opacity-80 transition-opacity"
+              onError={(e) => {
+                // Fallback to text if image fails to load
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.nextElementSibling?.classList.remove('hidden');
+              }}
+            />
+            <div className="hidden text-xl font-bold text-[#b46] hover:opacity-80 transition-opacity">Larkit</div>
+          </a>
+        </div>
+        
         {/* Current Timestamp - Main Display */}
         <div className="text-center space-y-8">
           <div className="space-y-6">
-            <div className="text-9xl font-bold tracking-tight leading-none">
+            <div 
+              className="text-9xl font-bold tracking-tight leading-none cursor-pointer hover:text-[#b46] transition-colors"
+              onClick={handleTimestampClick}
+              title="Click to copy"
+            >
               {currentTimestamp}
             </div>
             <div className="text-3xl text-muted-foreground font-medium tracking-wide">Unix Timestamp</div>
@@ -104,14 +134,14 @@ const TimestampConverter = () => {
               className="bg-muted-foreground hover:bg-[#b46] text-background text-xl px-8 py-4 rounded-none transition-colors"
             >
               <Minus className="h-6 w-6 mr-3" />
-              -1h
+              1h
             </Button>
             <Button
               onClick={() => adjustTimestamp(1)}
               className="bg-muted-foreground hover:bg-[#b46] text-background text-xl px-8 py-4 rounded-none transition-colors"
             >
               <Plus className="h-6 w-6 mr-3" />
-              +1h
+              1h
             </Button>
             <Button
               onClick={resetToNow}
@@ -123,6 +153,7 @@ const TimestampConverter = () => {
           </div>
         </div>
 
+        
         {/* Current Date in Selected Timezone */}
         <div className="text-center space-y-8 py-12 border-t border-border">
           <div className="space-y-6">
@@ -177,7 +208,7 @@ const TimestampConverter = () => {
                   <Button
                     onClick={() => copyToClipboard(customTimestamp, 'Converted timestamp')}
                     className="bg-foreground hover:bg-[#b46] text-background text-lg rounded-none transition-colors"
-                  >
+                    >
                     <Copy className="h-5 w-5 mr-2" />
                     Copy
                   </Button>
