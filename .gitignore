@@ -22,3 +22,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Credentials
+*key.json
+service-account*.json
+.env*
+!.env.example
+
+# Security scanner output (contains copies of discovered secrets)
+strix_runs/
+
+# Wrangler local state
+.wrangler/

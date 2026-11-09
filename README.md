@@ -2,11 +2,14 @@
 
 Minimal Vite + React + shadcn/ui + TypeScript starter.
 
+## Requirements
+
+Node.js 26 (see `.nvmrc`).
+
 ## Install
 
 ```sh
-npm config set registry https://registry.npmmirror.com # if npmjs.org is down
-npm install
+npm ci
 ```
 
 ## Dev
@@ -21,3 +24,11 @@ npm run dev
 npm run build
 ```
 
+## Deploy
+
+Deploys are manual. Commit first, so the release is tied to a clean revision:
+
+```sh
+npm run build
+npx wrangler pages deploy dist --project-name=time-glide --branch=main
+```

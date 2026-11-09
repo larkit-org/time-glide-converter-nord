@@ -1,10 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "next-themes";
 import { Toaster } from "./components/ui/sonner";
 import { TooltipProvider } from "./components/ui/tooltip";
 import TimestampConverter from "./components/TimestampConverter";
 import { ThemeToggle } from "./components/ui/theme-toggle";
+import MainMenu from "./components/MainMenu";
 import Footer from './components/Footer';
 import './App.css';
 
@@ -15,25 +15,20 @@ const App = () => (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <TooltipProvider>
         <Toaster />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={
-              <>
-                <div className="min-h-screen flex flex-col">
-                  <div className="flex-grow">
-                    <div className="container mx-auto p-4">
-                      <div className="flex justify-end mb-8">
-                        <ThemeToggle />
-                      </div>
-                      <TimestampConverter />
-                    </div>
-                  </div>
-                  <Footer />
-                </div>
-              </>
-            } />
-          </Routes>
-        </BrowserRouter>
+        <div className="min-h-screen bg-background text-foreground">
+          <header className="fixed top-0 left-0 right-0 z-50">
+            <div className="container mx-auto px-4 py-4">
+              <div className="flex justify-between items-center">
+                <MainMenu />
+                <ThemeToggle />
+              </div>
+            </div>
+          </header>
+          <main className="container mx-auto px-4 pt-20">
+            <TimestampConverter />
+          </main>
+          <Footer />
+        </div>
       </TooltipProvider>
     </ThemeProvider>
   </QueryClientProvider>
