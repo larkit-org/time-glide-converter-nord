@@ -1,40 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { GlobeIcon } from "@radix-ui/react-icons";
+
+const SYNC_INTERVAL_MS = 5 * 60 * 1000;
 
 const AtomicClock = () => {
   const [time, setTime] = useState<string>('');
-  const [offset, setOffset] = useState<number>(0);
+  // Kept in a ref: as effect state, every new offset would trigger another fetch.
+  const offsetRef = useRef(0);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const syncWithServer = async () => {
       try {
-        const response = await fetch('https://worldtimeapi.org/api/ip');
+        const response = await fetch('https://worldtimeapi.org/api/ip', { signal: controller.signal });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
         const serverTime = new Date(data.datetime).getTime();
-        const localTime = Date.now();
-        setOffset(serverTime - localTime);
+        if (!Number.isFinite(serverTime)) throw new Error('Invalid datetime in response');
+        offsetRef.current = serverTime - Date.now();
       } catch (error) {
-        console.error('Error syncing with server:', error);
+        if (!controller.signal.aborted) console.error('Error syncing with server:', error);
       }
     };
 
-    // Синхронизируемся с сервером при загрузке
     syncWithServer();
-    
-    // И затем каждые 5 минут
-    const syncInterval = setInterval(syncWithServer, 5 * 60 * 1000);
-
-    // Обновляем локальное время каждую секунду
+    const syncInterval = setInterval(syncWithServer, SYNC_INTERVAL_MS);
     const tickInterval = setInterval(() => {
-      const now = new Date(Date.now() + offset);
-      setTime(now.toLocaleTimeString());
+      setTime(new Date(Date.now() + offsetRef.current).toLocaleTimeString());
     }, 1000);
 
     return () => {
+      controller.abort();
       clearInterval(syncInterval);
       clearInterval(tickInterval);
     };
-  }, [offset]);
+  }, []);
 
   return (
     <div className="flex items-center space-x-2 text-sm text-muted-foreground">

@@ -1,19 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Copy, Minus, Plus, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { useSound } from '../hooks/use-sound';
 import logoWhite from '../assets/logo-lark-white.png';
 import logoBlack from '../assets/lark-logo-black.png';
-import { timezones, readStoredTimezone } from '../lib/timezones';
+import TimezonePicker from './TimezonePicker';
+import { calculateTimeDifference, detectTimezone, readStoredTimezone } from '../lib/timezones';
 
 const TimestampConverter = () => {
   const [currentTimestamp, setCurrentTimestamp] = useState(Math.floor(Date.now() / 1000));
   const [customTimestamp, setCustomTimestamp] = useState('');
   const [customDate, setCustomDate] = useState('');
-  const [timezone1, setTimezone1] = useState(() => readStoredTimezone('timestamp-timezone-1', 'UTC'));
+  const [timezone1, setTimezone1] = useState(() => readStoredTimezone('timestamp-timezone-1', detectTimezone() ?? 'UTC'));
   const [timezone2, setTimezone2] = useState(() => readStoredTimezone('timestamp-timezone-2', 'Europe/Moscow'));
   const { play: playLarkSound } = useSound('/sounds/lark.mp3');
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -32,6 +32,8 @@ const TimestampConverter = () => {
 
   const formatDate = (timestamp: number, tz: string = 'UTC') => {
     const date = new Date(timestamp * 1000);
+    // Intl.DateTimeFormat throws on dates outside the range Date can represent.
+    if (Number.isNaN(date.getTime())) return 'Invalid timestamp';
     return new Intl.DateTimeFormat('en-US', {
       timeZone: tz,
       year: 'numeric',
@@ -158,18 +160,7 @@ const TimestampConverter = () => {
             <div className="text-3xl md:text-5xl font-bold break-words">
               {formatDate(currentTimestamp, timezone1)}
             </div>
-            <div className="flex justify-center px-4">
-              <Select value={timezone1} onValueChange={setTimezone1}>
-                <SelectTrigger className="w-full md:w-80 text-base md:text-xl border-2 border-foreground rounded-none">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {timezones.map((tz) => (
-                    <SelectItem key={tz} value={tz} className="text-base md:text-xl">{tz}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <TimezonePicker value={timezone1} onChange={setTimezone1} />
             <Button
               onClick={() => copyToClipboard(formatDate(currentTimestamp, timezone1), `Date in ${timezone1}`)}
               className="bg-foreground hover:bg-[#b46] text-background text-base md:text-xl px-6 md:px-10 py-2 md:py-4 transition-colors"
@@ -184,18 +175,7 @@ const TimestampConverter = () => {
             <div className="text-3xl md:text-5xl font-bold break-words">
               {formatDate(currentTimestamp, timezone2)}
             </div>
-            <div className="flex justify-center px-4">
-              <Select value={timezone2} onValueChange={setTimezone2}>
-                <SelectTrigger className="w-full md:w-80 text-base md:text-xl border-2 border-foreground rounded-none">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {timezones.map((tz) => (
-                    <SelectItem key={tz} value={tz} className="text-base md:text-xl">{tz}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            <TimezonePicker value={timezone2} onChange={setTimezone2} />
             <Button
               onClick={() => copyToClipboard(formatDate(currentTimestamp, timezone2), `Date in ${timezone2}`)}
               className="bg-foreground hover:bg-[#b46] text-background text-base md:text-xl px-6 md:px-10 py-2 md:py-4 transition-colors"
@@ -276,39 +256,6 @@ const TimestampConverter = () => {
       </div>
     </div>
   );
-};
-
-// Helper function to calculate time difference between timezones
-const calculateTimeDifference = (timestamp: number, tz1: string, tz2: string) => {
-  const date = new Date(timestamp * 1000);
-  
-  // Get the time parts for both timezones
-  const [time1, period1] = date.toLocaleTimeString('en-US', { 
-    timeZone: tz1,
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: false
-  }).split(':').map(Number);
-
-  const [time2, period2] = date.toLocaleTimeString('en-US', {
-    timeZone: tz2,
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: false
-  }).split(':').map(Number);
-
-  // Calculate difference in hours and minutes
-  let hourDiff = time1 - time2;
-  
-  // Handle cases where the difference crosses the day boundary
-  if (hourDiff > 12) {
-    hourDiff = hourDiff - 24;
-  } else if (hourDiff < -12) {
-    hourDiff = hourDiff + 24;
-  }
-
-  const sign = hourDiff >= 0 ? '+' : '';
-  return `${sign}${hourDiff}:00`;
 };
 
 export default TimestampConverter;
