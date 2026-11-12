@@ -5,12 +5,21 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    # Minor and patch updates are grouped so they land as small, low-risk PRs.
+    # Major updates are left out of the groups and arrive as one PR per package,
+    # so a single breaking release cannot block every other update.
     groups:
       # Code delivered to browsers: reviewed on its own, separate from tooling.
       runtime:
         dependency-type: production
+        update-types:
+          - minor
+          - patch
       build-tooling:
         dependency-type: development
+        update-types:
+          - minor
+          - patch
   - package-ecosystem: github-actions
     directory: /
     schedule:
