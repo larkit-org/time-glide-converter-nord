@@ -10,7 +10,7 @@ import TimezonePicker from './TimezonePicker';
 import { calculateTimeDifference, detectTimezone, readStoredTimezone } from '../lib/timezones';
 
 const TimestampConverter = () => {
-  const [currentTimestamp, setCurrentTimestamp] = useState(Math.floor(Date.now() / 1000));
+  const [currentTimestamp, setCurrentTimestamp] = useState(() => Math.floor(Date.now() / 1000));
   const [customTimestamp, setCustomTimestamp] = useState('');
   const [customDate, setCustomDate] = useState('');
   const [timezone1, setTimezone1] = useState(() => readStoredTimezone('timestamp-timezone-1', detectTimezone() ?? 'UTC'));
