@@ -17,7 +17,7 @@ const TimezonePicker = ({ value, onChange }: TimezonePickerProps) => {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [cityIndex, setCityIndex] = useState<CityIndex>([]);
-  const detectedTimezone = useMemo(detectTimezone, []);
+  const detectedTimezone = useMemo(() => detectTimezone(), []);
 
   useEffect(() => {
     if (!open) return;
