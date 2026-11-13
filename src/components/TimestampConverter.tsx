@@ -157,7 +157,7 @@ const TimestampConverter = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
           {/* First Timezone */}
           <div className="space-y-4 md:space-y-6">
-            <div className="text-3xl md:text-5xl font-bold break-words">
+            <div className="text-3xl md:text-5xl font-bold wrap-break-word">
               {formatDate(currentTimestamp, timezone1)}
             </div>
             <TimezonePicker value={timezone1} onChange={setTimezone1} />
@@ -172,7 +172,7 @@ const TimestampConverter = () => {
 
           {/* Second Timezone */}
           <div className="space-y-4 md:space-y-6">
-            <div className="text-3xl md:text-5xl font-bold break-words">
+            <div className="text-3xl md:text-5xl font-bold wrap-break-word">
               {formatDate(currentTimestamp, timezone2)}
             </div>
             <TimezonePicker value={timezone2} onChange={setTimezone2} />
@@ -213,7 +213,7 @@ const TimestampConverter = () => {
             </Button>
             {customTimestamp && (
               <div className="text-center space-y-4 p-6 md:p-8 bg-muted border-2 border-foreground">
-                <div className="text-2xl md:text-4xl font-bold break-words">{customTimestamp}</div>
+                <div className="text-2xl md:text-4xl font-bold wrap-break-word">{customTimestamp}</div>
                 <Button
                   onClick={() => copyToClipboard(customTimestamp, 'Converted timestamp')}
                   className="bg-foreground hover:bg-[#b46] text-background text-base md:text-lg transition-colors"
@@ -239,7 +239,7 @@ const TimestampConverter = () => {
             />
             {customTimestamp && (
               <div className="text-center space-y-4 p-6 md:p-8 bg-muted border-2 border-foreground">
-                <div className="text-2xl md:text-4xl font-bold break-words">
+                <div className="text-2xl md:text-4xl font-bold wrap-break-word">
                   {formatDate(parseInt(customTimestamp), timezone1)}
                 </div>
                 <Button

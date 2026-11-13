@@ -21,7 +21,7 @@ const Footer = () => {
         </div>
         <Button 
           variant="default" 
-          className="bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600 text-white"
+          className="bg-linear-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600 text-white"
           onClick={() => window.open('https://larkit.org/donate', '_blank')}
         >
           Donate ❤️
