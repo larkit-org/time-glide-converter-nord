@@ -13,12 +13,16 @@ const AtomicClock = () => {
 
     const syncWithServer = async () => {
       try {
-        const response = await fetch('https://worldtimeapi.org/api/ip', { signal: controller.signal });
+        // Same-origin Pages Function (functions/api/time.ts): no third party, CSP stays 'self'.
+        const sentAt = Date.now();
+        const response = await fetch('/api/time', { signal: controller.signal, cache: 'no-store' });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data = await response.json();
-        const serverTime = new Date(data.datetime).getTime();
-        if (!Number.isFinite(serverTime)) throw new Error('Invalid datetime in response');
-        offsetRef.current = serverTime - Date.now();
+        const receivedAt = Date.now();
+        const serverTime = Number(data?.now);
+        if (!Number.isFinite(serverTime)) throw new Error('Invalid time in response');
+        // NTP-style: the server stamped the request roughly halfway through the round trip.
+        offsetRef.current = serverTime - (sentAt + receivedAt) / 2;
       } catch (error) {
         if (!controller.signal.aborted) console.error('Error syncing with server:', error);
       }
